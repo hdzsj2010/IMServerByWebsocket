@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>message test</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+</head>
+<body>
+	<h3>WebSocket 聊天室：</h3>
+	<div style="margin:0 auto; width: 800px;">
+　　<textarea id="taMessages" style="width: 360px; height: 200px;" readonly ></textarea>
+　　<br />
+　　<input id="btnMessage" type="text" style="float:left; width:300px;" />
+　　<input id="btnSend" type="button" value="Send" disabled="disabled" onclick="sendMessage();"/>
+</div>
+ 
+<script>
+　　/* 注意浏览器js的执行顺序 */
+　　var wsServer = 'ws://10.108.250.85:8123/chatserver'; //服务器地址
+　　var websocket = new WebSocket(wsServer); //创建WebSocket对象
+ 
+　　websocket.onopen = function(evt) {
+　　　　document.getElementById("btnSend").disabled = false;
+　　}
+
+　　websocket.onmessage = function(evt) {
+		if (document.getElementById("taMessages").value=="") {
+			document.getElementById("taMessages").value += evt.data;
+		}else{
+　　　　    document.getElementById("taMessages").value += "\n"+evt.data;
+		}
+　　}
+　　websocket.onclose = function(evt) {
+　　}
+　　websocket.onerror = function(evt) {
+　　}
+ 
+　　function sendMessage() {
+　　　　var message = document.getElementById('btnMessage').value;
+　　　　if ( websocket.readyState == WebSocket.OPEN ) {
+　　　　　　websocket.send(message);
+　　　　}
+　　　　document.getElementById('btnMessage').value = '';
+　　}
+</script>
+</body>
+</html>

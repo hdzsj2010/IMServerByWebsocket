@@ -1,0 +1,71 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.message.app</groupId>
+  <artifactId>my-app</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  
+  <!-- 项目属性 -->
+	<properties>
+		<spring.version>4.0.8.RELEASE</spring.version>
+	</properties>
+	
+  <repositories>
+  	<repository>
+  		<id>oschina-repos</id>
+  		<name>Oschina Releases</name>
+  		<url>http://maven.oschina.net/content/groups/public</url>
+  	</repository>
+    <repository>
+        <id>java-repos</id>
+        <name>Java Repository</name>
+        <url>http://download.java.net/maven/2/</url>
+    </repository>	
+    <repository>
+            <id>springsource-repos</id>
+            <name>SpringSource Repository</name>
+            <url>http://repo.spring.io/release/</url>
+    </repository>
+        
+	<repository>
+			<id>central</id>
+			<name>Central Repository</name>
+			<url>http://repo1.maven.org/maven2</url>
+	</repository>	
+	<repository>  
+      <id>maven-net-cn</id>  
+      <name>Maven China Mirror</name>  
+      <url>http://maven.net.cn/content/groups/public/</url>  
+      <releases>  
+        <enabled>true</enabled>  
+      </releases>  
+      <snapshots>  
+        <enabled>false</enabled>  
+      </snapshots>  
+    </repository>  
+  </repositories>
+  
+  <dependencies>
+    <dependency>
+    	<groupId>io.netty</groupId>
+    	<artifactId>netty-all</artifactId>
+    	<version>4.0.29.Final</version>
+	</dependency>
+    <dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+	<dependency>
+        <groupId>redis.clients</groupId>
+        <artifactId>jedis</artifactId>
+        <version>2.7.2</version>
+    </dependency>
+  </dependencies>
+
+</project>
