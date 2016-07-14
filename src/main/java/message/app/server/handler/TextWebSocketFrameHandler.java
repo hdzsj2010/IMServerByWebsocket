@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.springframework.objenesis.instantiator.basic.NewInstanceInstantiator;
+
 import message.app.model.User;
 import message.app.server.util.LocalChannelManger;
 import message.app.server.util.jedis.JedisUtil;
@@ -52,10 +54,22 @@ public class TextWebSocketFrameHandler extends SimpleChannelInboundHandler<TextW
 			String username = message.split(":")[1];
 			
 			//初始化user，并从redis获取好友数据
+			Set<String> friendsAll = JedisUtil.smembers(username);
 			user.setUsername(username);
-			user.setFriends(JedisUtil.smembers(username));
-			
+			user.setFriends(friendsAll);
 			LocalChannelManger.getInstance().addContext(username, ctx);
+			
+			Set<String> online = LocalChannelManger.getInstance().getAll();
+			Set<String> onlineFriends = new HashSet<String>();
+			onlineFriends.addAll(friendsAll);
+			onlineFriends.retainAll(online);
+			//返回在线好友列表
+			StringBuffer stringBuffer = new StringBuffer("FRIENDSON:");
+			for (String string : onlineFriends) {
+				stringBuffer.append(string).append(",");
+			}
+			ctx.writeAndFlush(new TextWebSocketFrame(stringBuffer.toString()));
+			
 			int count = LocalChannelManger.getInstance().staticClients();
 			System.out.println("Current clients:"+count);
 			syncRoster("IN");
@@ -77,6 +91,8 @@ public class TextWebSocketFrameHandler extends SimpleChannelInboundHandler<TextW
 			}
 			//发消息格式——注：如果消息中含有冒号则需要特殊处理
 			String from = LocalChannelManger.getInstance().getName(ctx);
+			MessageDeal messageDeal = new MessageDeal(from, to, body);
+			
 			body = "RECEIVE:"+from+"#"+body;
 			if (LocalChannelManger.getInstance().isAvailable(to)) {
 				LocalChannelManger.getInstance().getContext(to)
